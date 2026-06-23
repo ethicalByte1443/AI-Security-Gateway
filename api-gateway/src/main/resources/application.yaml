@@ -1,0 +1,44 @@
+server:
+  port: 8082
+
+spring:
+  application:
+    name: api-gateway
+
+  cloud:
+    gateway:
+      server:
+        webflux:
+          routes:
+            - id: auth-service
+              uri: lb://auth-service
+              predicates:
+                - Path=/auth/**
+
+            - id: prompt-scanner-service
+              uri: lb://prompt-scanner-service
+              predicates:
+                - Path=/prompts/**
+
+            - id: llm-proxy-service
+              uri: lb://llm-proxy-service
+              predicates:
+                - Path=/llm/**
+
+            - id: audit-service
+              uri: lb://audit-service
+              predicates:
+                - Path=/audit/**
+
+            - id: model-scanner-service
+              uri: lb://model-scanner-service
+              predicates:
+                - Path=/models/**
+
+eureka:
+  client:
+    service-url:
+      defaultZone: http://localhost:8761/eureka/
+
+jwt:
+  secret: myVerySecretKeyForJwtTokenGenerationMyVerySecretKey12345
